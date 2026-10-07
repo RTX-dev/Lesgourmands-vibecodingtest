@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Les Gourmands — Clan Destiny 2. Explorez la carte céleste et découvrez le clan." />
+<title>Les Gourmands — Clan Destiny 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="starfield" aria-hidden="true"></canvas>
+<div class="nebula nebula-1" aria-hidden="true"></div>
+<div class="nebula nebula-2" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-mark">◆</span>
+    <span class="logo-text">LES GOURMANDS</span>
+  </div>
+  <nav class="main-nav">
+    <a href="#carte">Carte</a>
+    <a href="#clan">Le Clan</a>
+    <a href="#events">Événements</a>
+    <a href="#rejoindre">Rejoindre</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="hero-eyebrow">CLAN DESTINY 2 · EU · FR</p>
+    <h1 class="hero-title">Les&nbsp;Gourmands</h1>
+    <p class="hero-sub">Gardiens affamés de loot. Explorez la carte céleste :<br class="hero-break" /> survolez une planète pour découvrir le clan.</p>
+    <div class="hero-scroll">
+      <span></span>
+      <p>Descendre</p>
+    </div>
+  </section>
+
+  <section id="carte" class="map-section">
+    <h2 class="section-title"><span>Carte Céleste</span></h2>
+    <p class="section-sub">Survolez ou touchez une planète pour afficher les informations du clan.</p>
+
+    <div class="space-map" id="spaceMap">
+
+      <div class="planet-wrap" style="--x:12%; --y:18%; --delay:0s;">
+        <div class="planet planet-terre" data-planet="terre" tabindex="0" role="button" aria-label="Terre — infos du clan"></div>
+        <span class="planet-label">Terre</span>
+      </div>
+
+      <div class="planet-wrap" style="--x:68%; --y:10%; --delay:0.6s;">
+        <div class="planet planet-lune" data-planet="lune" tabindex="0" role="button" aria-label="Lune — infos du clan"></div>
+        <span class="planet-label">Lune</span>
+      </div>
+
+      <div class="planet-wrap" style="--x:82%; --y:48%; --delay:1.2s;">
+        <div class="planet planet-mars" data-planet="mars" tabindex="0" role="button" aria-label="Mars — infos du clan"></div>
+        <span class="planet-label">Mars</span>
+      </div>
+
+      <div class="planet-wrap" style="--x:38%; --y:58%; --delay:0.9s;">
+        <div class="planet planet-jupiter" data-planet="jupiter" tabindex="0" role="button" aria-label="Jupiter — infos du clan"></div>
+        <span class="planet-label">Jupiter</span>
+      </div>
+
+      <div class="planet-wrap" style="--x:20%; --y:76%; --delay:1.5s;">
+        <div class="planet planet-saturne" data-planet="saturne" tabindex="0" role="button" aria-label="Saturne — infos du clan"></div>
+        <span class="planet-label">Saturne</span>
+      </div>
+
+      <div class="planet-wrap" style="--x:55%; --y:84%; --delay:0.3s;">
+        <div class="planet planet-neptune" data-planet="neptune" tabindex="0" role="button" aria-label="Neptune — infos du clan"></div>
+        <span class="planet-label">Neptune</span>
+      </div>
+
+      <div class="map-ring ring-1" aria-hidden="true"></div>
+      <div class="map-ring ring-2" aria-hidden="true"></div>
+      <div class="map-ring ring-3" aria-hidden="true"></div>
+
+      <aside class="info-panel" id="infoPanel" aria-live="polite">
+        <button class="panel-close" id="panelClose" aria-label="Fermer">×</button>
+        <div class="panel-content" id="panelContent"></div>
+      </aside>
+
+    </div>
+  </section>
+
+  <section id="clan" class="clan-section">
+    <h2 class="section-title"><span>Le Clan</span></h2>
+    <div class="clan-grid">
+      <article class="clan-card">
+        <h3>Notre histoire</h3>
+        <p>Né d'une bande d'amis autour d'un raid à 3h du matin, Les Gourmands sont devenus un clan familial où l'on vient pour le loot… et où l'on reste pour l'ambiance.</p>
+      </article>
+      <article class="clan-card">
+        <h3>Nos valeurs</h3>
+        <p>Bonne humeur, entraide, zéro toxicité. Débutants bienvenus, vétérans patients. On mange les raids le dimanche, pas les joueurs.</p>
+      </article>
+      <article class="clan-card">
+        <h3>Nos activités</h3>
+        <p>Raids hebdomadaires, Donjons GM, Grands Prix, Joug, Trials… et soirées "tout sauf le raid qu'on prévoit de faire".</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="events" class="events-section">
+    <h2 class="section-title"><span>Événements récents</span></h2>
+    <div class="events-grid">
+      <article class="event-card">
+        <time>Sam. 21:00</time>
+        <h3>Raid du week-end</h3>
+        <p>Croisée du Divin — run 1 & 2, tous niveaux acceptés.</p>
+      </article>
+      <article class="event-card">
+        <time>Mar. 20:30</time>
+        <h3>Donjon GM</h3>
+        <p>Kharg-Bak, Abîme ou Joug — selon les votes du Discord.</p>
+      </article>
+      <article class="event-card">
+        <time>Ven. 21:30</time>
+        <h3>Soirée PvP</h3>
+        <p>Trials & Iron Banner, que tu sois DIEU ou un paté en croûte.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="rejoindre" class="join-section">
+    <h2 class="section-title"><span>Rejoindre le clan</span></h2>
+    <p class="join-sub">Deux clics et un appétit d'Ours.</p>
+    <div class="join-buttons">
+      <a class="btn btn-primary" href="https://www.bungie.net/" target="_blank" rel="noopener">Clan sur Bungie.net</a>
+      <a class="btn btn-ghost" href="https://discord.com/" target="_blank" rel="noopener">Notre Discord</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <p class="footer-logo">◆ LES GOURMANDS</p>
+    <p class="footer-note">Site communautaire — Destiny 2 est une marque de Bungie, Inc. Aucune affiliation.</p>
+  </footer>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
