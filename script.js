@@ -339,13 +339,28 @@ const clanData = {
     panel.classList.remove("open");
   }
 
+  let leaveTimer = null;
+
   document.querySelectorAll(".planet").forEach((p) => {
-    p.addEventListener("mouseenter", () => render(p.dataset.planet));
+    p.addEventListener("mouseenter", () => {
+      if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+      render(p.dataset.planet);
+    });
+    p.addEventListener("mouseleave", () => {
+      leaveTimer = setTimeout(close, 180);
+    });
     p.addEventListener("focus", () => render(p.dataset.planet));
     p.addEventListener("click", (e) => {
       e.stopPropagation();
       render(p.dataset.planet);
     });
+  });
+
+  panel.addEventListener("mouseenter", () => {
+    if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+  });
+  panel.addEventListener("mouseleave", () => {
+    if (panel.classList.contains("open")) close();
   });
 
   closeBtn.addEventListener("click", close);
