@@ -139,12 +139,16 @@ body {
 .orbit-2 { width: 80vw; height: 80vw; animation-duration: 230s; animation-direction: reverse; }
 @keyframes slowspin { to { transform: translate(-50%,-50%) rotate(360deg); } }
 
-/* ============ DESTINATION = planète + connecteur + carte ============ */
+/* ============ DESTINATION = planète + connecteur + carte ============
+   Grille organique 3×3 en quinconce :
+   col 1 : x ≈ 15%   col 2 : x ≈ 50%   col 3 : x ≈ 85%
+   lignes  : y ≈ 22% / 50% / 78% (quinconce ±9%)
+   Chaque groupe est CENTRÉ sur son point (translate -50%). */
 .dest {
   position: absolute;
-  left: var(--x);
-  top: var(--y);
-  transform: translate(0, -50%);
+  left: var(--dx);
+  top: var(--dy);
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   gap: 0;
@@ -153,9 +157,20 @@ body {
   z-index: 5;
 }
 @keyframes destIn {
-  from { opacity: 0; transform: translate(-14px, -50%); }
-  to   { opacity: 1; transform: translate(0, -50%); }
+  from { opacity: 0; transform: translate(-50%, -50%) translate(-14px, 0); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
 }
+
+/* Placement desktop (grille quinconce, aucune intersection) */
+.d-terre   { --dx: 15%; --dy: 22%; }
+.d-mars    { --dx: 15%; --dy: 52%; }
+.d-lune    { --dx: 15%; --dy: 82%; }
+.d-europa  { --dx: 50%; --dy: 14%; }
+.d-io      { --dx: 50%; --dy: 46%; }
+.d-jupiter { --dx: 50%; --dy: 80%; }
+.d-neptune { --dx: 85%; --dy: 20%; }
+.d-saturne { --dx: 85%; --dy: 54%; }
+.d-rivage  { --dx: 85%; --dy: 86%; }
 
 /* Variante "flip" : carte à gauche de la planète */
 .dest.flip { flex-direction: row-reverse; }
@@ -612,6 +627,15 @@ body {
   .planet-saturne { width: 74px; height: 74px; }
   .planet-saturne .rings { width: 148px; height: 38px; }
   .dest-card { min-width: 170px; }
+  .d-terre   { --dx: 16%; --dy: 20%; }
+  .d-mars    { --dx: 16%; --dy: 52%; }
+  .d-lune    { --dx: 16%; --dy: 84%; }
+  .d-europa  { --dx: 50%; --dy: 14%; }
+  .d-io      { --dx: 50%; --dy: 48%; }
+  .d-jupiter { --dx: 50%; --dy: 82%; }
+  .d-neptune { --dx: 84%; --dy: 20%; }
+  .d-saturne { --dx: 84%; --dy: 54%; }
+  .d-rivage  { --dx: 84%; --dy: 86%; }
 }
 @media (max-width: 760px) {
   .planet-jupiter { width: 88px; height: 88px; }
@@ -621,14 +645,26 @@ body {
   .planet-lune, .planet-io { width: 46px; height: 46px; }
   .planet-saturne { width: 56px; height: 56px; }
   .planet-saturne .rings { width: 108px; height: 28px; border-width: 5px; }
-  .connector { width: 20px; }
-  .dest-card { min-width: 150px; padding: 10px 13px 9px; }
-  .dest-name { font-size: 12px; letter-spacing: 0.3em; }
-  .dest-sub { font-size: 8px; letter-spacing: 0.2em; }
-  .detail-row { font-size: 10px; }
-  .detail-label { font-size: 8px; }
-  .map-hint { bottom: 38px; }
-  .map-hint p { font-size: 8px; letter-spacing: 0.3em; text-align: center; }
+  .connector { width: 18px; }
+  .dest-card { min-width: 148px; padding: 8px 12px 7px; }
+  .dest-name { font-size: 11px; letter-spacing: 0.28em; }
+  .dest-sub { font-size: 7.5px; letter-spacing: 0.18em; }
+  .detail-row { font-size: 9px; }
+  .detail-label { font-size: 7px; }
+  /* Mobile : scroll devient nécessaire, disposition verticale sur hauteur étendue */
+  .space-map { position: absolute; min-height: 178vh; }
+  body { overflow-y: auto; }
+  .d-terre   { --dx: 22%; --dy: 6%; }
+  .d-mars    { --dx: 22%; --dy: 19%; }
+  .d-lune    { --dx: 22%; --dy: 32%; }
+  .d-europa  { --dx: 22%; --dy: 45%; }
+  .d-io      { --dx: 22%; --dy: 58%; }
+  .d-jupiter { --dx: 22%; --dy: 71%; }
+  .d-neptune { --dx: 22%; --dy: 84%; }
+  .d-saturne { --dx: 22%; --dy: 97%; }
+  .d-rivage  { --dx: 22%; --dy: 110%; }
+  .map-footer { position: absolute; }
+  .map-hint { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
