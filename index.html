@@ -15,7 +15,6 @@
 <canvas id="starfield" aria-hidden="true"></canvas>
 <div class="nebula nebula-1" aria-hidden="true"></div>
 <div class="nebula nebula-2" aria-hidden="true"></div>
-<div class="sun-glow" aria-hidden="true"></div>
 
 <!-- Intro d'apparition -->
 <div id="intro" aria-hidden="true">
@@ -26,69 +25,112 @@
   </div>
 </div>
 
-<!-- Carte céleste = site entier -->
+<!-- Carte céleste = site -->
 <div class="space-map" id="spaceMap">
-  <div class="map-grid" aria-hidden="true"></div>
-
+  <div class="map-vignette" aria-hidden="true"></div>
   <div class="orbit-ring orbit-1" aria-hidden="true"></div>
   <div class="orbit-ring orbit-2" aria-hidden="true"></div>
-  <div class="orbit-ring orbit-3" aria-hidden="true"></div>
 
-  <div class="planet-wrap" style="--x:8%;  --y:24%; --delay:.15s;">
+  <!-- TERRE -->
+  <div class="dest" style="--x:9%; --y:26%; --delay:.15s;">
     <div class="planet planet-terre" data-planet="terre" tabindex="0" role="button" aria-label="Terre — informations du clan"></div>
-    <span class="planet-name">Terre</span>
-    <span class="planet-sub">La Tour — QG du clan</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Terre</p>
+      <p class="dest-sub">La Tour — QG du clan</p>
+      <div class="dest-details" data-details="terre"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:22%; --y:64%; --delay:.30s;">
+  <!-- LUNE -->
+  <div class="dest" style="--x:20%; --y:62%; --delay:.30s;">
     <div class="planet planet-lune" data-planet="lune" tabindex="0" role="button" aria-label="Lune — informations du clan"></div>
-    <span class="planet-name">Lune</span>
-    <span class="planet-sub">Donjons & Cauchemars</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Lune</p>
+      <p class="dest-sub">Donjons & Cauchemars</p>
+      <div class="dest-details" data-details="lune"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:34%; --y:14%; --delay:.45s;">
+  <!-- MARS -->
+  <div class="dest" style="--x:30%; --y:12%; --delay:.45s;">
     <div class="planet planet-mars" data-planet="mars" tabindex="0" role="button" aria-label="Mars — informations du clan"></div>
-    <span class="planet-name">Mars</span>
-    <span class="planet-sub">Escalier & Farm</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Mars</p>
+      <p class="dest-sub">Escalier & Farm</p>
+      <div class="dest-details" data-details="mars"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:46%; --y:44%; --delay:.60s;">
+  <!-- IO -->
+  <div class="dest" style="--x:42%; --y:46%; --delay:.60s;">
     <div class="planet planet-io" data-planet="io" tabindex="0" role="button" aria-label="Io — informations du clan"></div>
-    <span class="planet-name">Io</span>
-    <span class="planet-sub">Représailles & Bundles</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Io</p>
+      <p class="dest-sub">Représailles & Stratégie</p>
+      <div class="dest-details" data-details="io"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:56%; --y:78%; --delay:.75s;">
+  <!-- JUPITER -->
+  <div class="dest" style="--x:50%; --y:80%; --delay:.75s;">
     <div class="planet planet-jupiter" data-planet="jupiter" tabindex="0" role="button" aria-label="Jupiter — informations du clan"></div>
-    <span class="planet-name">Jupiter</span>
-    <span class="planet-sub">Raids</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Jupiter</p>
+      <p class="dest-sub">Raids</p>
+      <div class="dest-details" data-details="jupiter"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:72%; --y:34%; --delay:.90s;">
+  <!-- EUROPA -->
+  <div class="dest flip" style="--x:57%; --y:18%; --delay:.90s;">
     <div class="planet planet-europa" data-planet="europa" tabindex="0" role="button" aria-label="Europa — informations du clan"></div>
-    <span class="planet-name">Europa</span>
-    <span class="planet-sub">Jugement de Vex</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Europa</p>
+      <p class="dest-sub">Jugement de Vex</p>
+      <div class="dest-details" data-details="europa"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:86%; --y:10%; --delay:1.05s;">
+  <!-- SATURNE -->
+  <div class="dest flip" style="--x:68%; --y:52%; --delay:1.05s;">
     <div class="planet planet-saturne" data-planet="saturne" tabindex="0" role="button" aria-label="Saturne — informations du clan"></div>
-    <span class="planet-name">Saturne</span>
-    <span class="planet-sub">Grands Prix & PvP</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Saturne</p>
+      <p class="dest-sub">Grands Prix & PvP</p>
+      <div class="dest-details" data-details="saturne"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:74%; --y:52%; --delay:1.20s;">
+  <!-- NEPTUNE -->
+  <div class="dest flip" style="--x:80%; --y:12%; --delay:1.20s;">
     <div class="planet planet-neptune" data-planet="neptune" tabindex="0" role="button" aria-label="Neptune — informations du clan"></div>
-    <span class="planet-name">Neptune</span>
-    <span class="planet-sub">Neomuna — Stratégie</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Neptune</p>
+      <p class="dest-sub">Neomuna — Stratégie</p>
+      <div class="dest-details" data-details="neptune"></div>
+    </div>
   </div>
 
-  <div class="planet-wrap" style="--x:12%; --y:84%; --delay:1.35s;">
+  <!-- RIVAGE BRISÉ -->
+  <div class="dest flip" style="--x:86%; --y:68%; --delay:1.35s;">
     <div class="planet planet-rivage" data-planet="rivage" tabindex="0" role="button" aria-label="Rivage brisé — informations du clan"></div>
-    <span class="planet-name">Rivage brisé</span>
-    <span class="planet-sub">Éclats & Lore</span>
+    <span class="connector" aria-hidden="true"></span>
+    <div class="dest-card">
+      <p class="dest-name">Rivage brisé</p>
+      <p class="dest-sub">Éclats & Lore</p>
+      <div class="dest-details" data-details="rivage"></div>
+    </div>
   </div>
 
-  <!-- HUD clan -->
+  <!-- HUD -->
   <header class="clan-hud">
     <div class="hud-logo">
       <span class="hud-mark">◆</span>
@@ -103,21 +145,10 @@
     </nav>
   </header>
 
-  <!-- Indication -->
   <div class="map-hint" id="mapHint">
     <span class="hint-line"></span>
     <p>SURVOLEZ UN MONDE POUR DÉCOUVRIR LE CLAN</p>
   </div>
-
-  <!-- Panneau d'infos clan -->
-  <aside class="clan-panel" id="clanPanel" aria-live="polite">
-    <button class="panel-close" id="panelClose" aria-label="Fermer le panneau">×</button>
-    <div class="panel-content" id="panelContent"></div>
-    <div class="panel-cta">
-      <a class="btn btn-primary" href="https://www.bungie.net/" target="_blank" rel="noopener">Rejoindre le clan</a>
-      <a class="btn btn-ghost" href="https://discord.com/" target="_blank" rel="noopener">Discord</a>
-    </div>
-  </aside>
 
   <footer class="map-footer">
     <p>Destiny 2 est une marque de Bungie, Inc. Site communautaire du clan — aucune affiliation.</p>
