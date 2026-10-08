@@ -1,680 +1,567 @@
 /* ============================================================
-   LES GOURMANDS — Carte céleste façon Directeur Destiny 2
-   Chaque monde : planète + connecteur fin + carte destination
+   LES GOURMAND — style "thin-line / line-art", esthétique UI
+   Destiny (Bungie) : lignes fines, losanges, capitales espacées
    ============================================================ */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 :root {
-  --bg: #04050a;
-  --accent: #f5d90a;
-  --accent-dim: #a38a06;
-  --cyan: #8fd8ff;
-  --text: #eceae0;
-  --text-dim: #96a0ad;
-  --line: rgba(236, 234, 224, 0.22);
-  --line-faint: rgba(236, 234, 224, 0.12);
-  --card: rgba(6, 9, 16, 0.88);
-  --font: "Josefin Sans", "Segoe UI", sans-serif;
+    --bg: #04060f;
+    --accent: #ffe066;          /* or Destiny */
+    --accent-soft: rgba(255, 224, 102, 0.55);
+    --line: rgba(255, 224, 102, 0.28);   /* trait fin standard */
+    --line-faint: rgba(232, 234, 242, 0.10);
+    --text: #e8eaf2;
+    --text-dim: #9aa0b5;
+    --panel-bg: rgba(6, 9, 20, 0.92);
 }
 
-html, body { height: 100%; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  overflow: hidden;
-}
-::selection { background: var(--accent); color: #000; }
-
-/* ============ FOND ============ */
-#starfield { position: fixed; inset: 0; z-index: 0; }
-
-.nebula {
-  position: fixed;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.38;
-  pointer-events: none;
-  z-index: 0;
-}
-.nebula-1 {
-  width: 60vw; height: 60vw;
-  left: -18vw; top: -25vw;
-  background: radial-gradient(circle, #2a1f5e 0%, transparent 60%);
-  animation: drift 50s ease-in-out infinite alternate;
-}
-.nebula-2 {
-  width: 50vw; height: 50vw;
-  right: -14vw; bottom: -18vw;
-  background: radial-gradient(circle, #10334d 0%, transparent 60%);
-  animation: drift 42s ease-in-out infinite alternate-reverse;
-}
-@keyframes drift {
-  from { transform: translate(0,0) scale(1); }
-  to   { transform: translate(5vw,4vw) scale(1.18); }
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Rajdhani", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
 }
 
-/* ============ INTRO ============ */
-#intro {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  animation: introOut 1.2s ease 2.6s forwards;
-  pointer-events: none;
-}
-#intro.hidden { display: none; }
-@keyframes introOut {
-  to { opacity: 0; visibility: hidden; }
-}
-.intro-eyebrow {
-  color: var(--accent);
-  font-size: clamp(11px, 1.6vw, 14px);
-  font-weight: 600;
-  letter-spacing: 0.6em;
-  text-transform: uppercase;
-  margin-bottom: 18px;
-  animation: fadeUp 1s ease both;
-}
-.intro-title {
-  font-size: clamp(2.4rem, 8vw, 5.5rem);
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  line-height: 1.05;
-  background: linear-gradient(180deg, #fff 25%, #878d99 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: fadeUp 1s 0.2s ease both;
-}
-.intro-sub {
-  margin-top: 20px;
-  color: var(--text-dim);
-  font-size: clamp(13px, 2vw, 16px);
-  font-weight: 300;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  animation: fadeUp 1s 0.5s ease both;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(26px); }
-  to   { opacity: 1; transform: translateY(0); }
+.accent { color: var(--accent); }
+
+/* Petit losange décoratif réutilisable */
+.diamond {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--accent);
+    transform: rotate(45deg);
 }
 
-/* ============ CARTE ============ */
-.space-map {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  opacity: 0;
-  animation: mapIn 1.6s ease 2.4s forwards;
-}
-@keyframes mapIn {
-  from { opacity: 0; transform: scale(1.05); }
-  to   { opacity: 1; transform: scale(1); }
+/* ============================================================
+   Écran de chargement
+   ============================================================ */
+
+.loading {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse at 25% 20%, rgba(255, 224, 102, 0.05), transparent 50%),
+        radial-gradient(ellipse at 75% 80%, rgba(90, 60, 160, 0.08), transparent 50%),
+        var(--bg);
+    transition: opacity 0.8s ease, visibility 0.8s;
 }
 
-.map-vignette {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(4,5,10,0.5) 100%);
-  pointer-events: none;
+.loading.done {
+    opacity: 0;
+    visibility: hidden;
 }
 
-.orbit-ring {
-  position: absolute;
-  top: 50%; left: 50%;
-  border: 1px dashed rgba(143,216,255,0.06);
-  border-radius: 50%;
-  transform: translate(-50%,-50%);
-  pointer-events: none;
-  animation: slowspin linear infinite;
-}
-.orbit-1 { width: 52vw; height: 52vw; animation-duration: 170s; }
-.orbit-2 { width: 80vw; height: 80vw; animation-duration: 230s; animation-direction: reverse; }
-@keyframes slowspin { to { transform: translate(-50%,-50%) rotate(360deg); } }
+/* Coins de cadre : volontairement retirés (style épuré) */
 
-/* ============ DESTINATION = planète + connecteur + carte ============
-   Grille organique 3×3 en quinconce :
-   col 1 : x ≈ 15%   col 2 : x ≈ 50%   col 3 : x ≈ 85%
-   lignes  : y ≈ 22% / 50% / 78% (quinconce ±9%)
-   Chaque groupe est CENTRÉ sur son point (translate -50%). */
-.dest {
-  position: absolute;
-  left: var(--dx);
-  top: var(--dy);
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: 0;
-  opacity: 0;
-  animation: destIn 0.9s var(--delay) cubic-bezier(.2,.8,.3,1.1) forwards;
-  z-index: 5;
-}
-@keyframes destIn {
-  from { opacity: 0; transform: translate(-50%, -50%) translate(-14px, 0); }
-  to   { opacity: 1; transform: translate(-50%, -50%); }
+.loading-inner {
+    text-align: center;
+    width: min(90vw, 460px);
 }
 
-/* Placement desktop (grille quinconce, aucune intersection) */
-.d-terre   { --dx: 15%; --dy: 22%; }
-.d-mars    { --dx: 15%; --dy: 52%; }
-.d-lune    { --dx: 15%; --dy: 82%; }
-.d-europa  { --dx: 50%; --dy: 14%; }
-.d-io      { --dx: 50%; --dy: 46%; }
-.d-jupiter { --dx: 50%; --dy: 80%; }
-.d-neptune { --dx: 85%; --dy: 20%; }
-.d-saturne { --dx: 85%; --dy: 54%; }
-.d-rivage  { --dx: 85%; --dy: 86%; }
-
-/* Variante "flip" : carte à gauche de la planète */
-.dest.flip { flex-direction: row-reverse; }
-.dest.flip .connector { transform: scaleX(-1); }
-
-/* Connecteur : ligne fine avec losange central */
-.connector {
-  width: clamp(28px, 4vw, 56px);
-  height: 1px;
-  background: linear-gradient(90deg, var(--line-faint), var(--line));
-  position: relative;
-  flex: none;
-}
-.connector::before {
-  content: "";
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 6px; height: 6px;
-  transform: translate(-50%,-50%) rotate(45deg);
-  background: transparent;
-  border: 1px solid var(--line);
-  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
-}
-.dest:hover .connector::before,
-.dest:focus-within .connector::before {
-  background: var(--accent);
-  border-color: var(--accent);
-  box-shadow: 0 0 8px rgba(245,217,10,0.5);
-}
-.dest:hover .connector,
-.dest:focus-within .connector {
-  background: linear-gradient(90deg, var(--line-faint), rgba(245,217,10,0.55));
+.loading-title {
+    font-size: clamp(2rem, 7vw, 3.4rem);
+    font-weight: 600;
+    letter-spacing: 14px;
+    text-transform: uppercase;
+    text-shadow: 0 0 30px rgba(255, 224, 102, 0.3);
+    padding-left: 14px; /* compense le letter-spacing sur la dernière lettre */
 }
 
-/* ---- Carte destination ---- */
-.dest-card {
-  position: relative;
-  min-width: clamp(180px, 15vw, 230px);
-  background: var(--card);
-  border: 1px solid var(--line-faint);
-  padding: 14px 18px 12px;
-  backdrop-filter: blur(8px);
-  transition: border-color 0.35s, background 0.35s, box-shadow 0.35s;
-  clip-path: polygon(
-    12px 0, 100% 0,
-    100% calc(100% - 12px), calc(100% - 12px) 100%,
-    0 100%, 0 12px
-  );
-}
-.dest:hover .dest-card,
-.dest:focus-within .dest-card {
-  border-color: var(--line);
-  background: rgba(8, 12, 22, 0.94);
-  box-shadow: 0 14px 44px rgba(0,0,0,0.55);
+.loading-sub {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--text-dim);
+    letter-spacing: 4px;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    margin: 1rem 0 2.4rem;
 }
 
-.dest-name {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  color: var(--text);
-  transition: color 0.3s;
-  white-space: nowrap;
-}
-.dest:hover .dest-name,
-.dest:focus-within .dest-name { color: #fff; }
-
-.dest-sub {
-  font-size: 9px;
-  font-weight: 400;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-top: 3px;
-  white-space: nowrap;
+/* Lignes fines de part et d'autre du sous-titre */
+.loading-sub::before,
+.loading-sub::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
 }
 
-/* Détails : visibles seulement au survol */
-.dest-details {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s cubic-bezier(.2,.8,.3,1);
-}
-.dest-details > div { overflow: hidden; }
-.dest:hover .dest-details,
-.dest:focus-within .dest-details { grid-template-rows: 1fr; }
-
-.detail-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  padding: 7px 0 0;
-  font-size: 12px;
-  font-weight: 400;
-}
-.detail-row + .detail-row { border-top: 1px solid var(--line-faint); margin-top: 7px; }
-.detail-label {
-  color: var(--text-dim);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.detail-value {
-  color: var(--text);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-.detail-lead {
-  margin-top: 10px;
-  padding-top: 9px;
-  border-top: 1px solid var(--line);
-  font-size: 11px;
-  font-weight: 300;
-  line-height: 1.6;
-  color: var(--text-dim);
-}
-.detail-lead strong {
-  color: var(--accent);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-}
-.detail-team {
-  margin-top: 9px;
-  padding-top: 9px;
-  border-top: 1px solid var(--line-faint);
-  font-size: 11px;
-  line-height: 1.9;
-  color: var(--text);
-}
-.detail-team span {
-  color: var(--text-dim);
-  font-size: 9px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-left: 8px;
-}
-.detail-event {
-  margin-top: 9px;
-  padding-top: 9px;
-  border-top: 1px solid var(--line-faint);
-  font-size: 10.5px;
-  font-weight: 300;
-  line-height: 1.6;
-  color: var(--text-dim);
-  font-style: italic;
+.loading-bar {
+    width: 100%;
+    height: 1px;
+    background: var(--line-faint);
+    position: relative;
+    overflow: visible;
 }
 
-/* ============ PLANÈTES (identiques, tailles ajustées) ============ */
-.planet {
-  border-radius: 50%;
-  cursor: pointer;
-  position: relative;
-  flex: none;
-  transition: transform 0.4s cubic-bezier(.2,.9,.3,1.3), filter 0.4s;
-}
-.dest:hover .planet,
-.dest:focus-within .planet {
-  transform: scale(1.14);
-  filter: brightness(1.25) drop-shadow(0 0 20px rgba(245,217,10,0.35));
-}
-.planet:focus-visible { outline: none; }
-
-/* Anneau de sélection */
-.planet::before {
-  content: "";
-  position: absolute;
-  inset: -14px;
-  border-radius: 50%;
-  border: 1px solid transparent;
-  transition: border-color 0.3s;
-  pointer-events: none;
-}
-.dest:hover .planet::before,
-.dest:focus-within .planet::before {
-  border-color: var(--accent);
-  animation: haloPulse 1.5s ease-out infinite;
-}
-@keyframes haloPulse {
-  0%   { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.38); opacity: 0; }
+.loading-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(255, 224, 102, 0.7);
+    transition: width 0.3s ease;
+    position: relative;
 }
 
-@keyframes surfaceSpin { to { background-position: 200% 50%; } }
-
-/* ---- TERRE ---- */
-.planet-terre {
-  width: 120px; height: 120px;
-  background:
-    radial-gradient(circle at 30% 26%, rgba(255,255,255,0.5) 0 2px, transparent 3px),
-    radial-gradient(circle at 68% 30%, rgba(255,255,255,0.35) 0 1.5px, transparent 3px),
-    radial-gradient(circle at 32% 30%, #5aaef0 0%, #1f5e9e 34%, #0b2c55 58%, #030d1e 100%);
-  box-shadow:
-    inset -16px -14px 34px rgba(0,0,0,0.85),
-    inset 4px 4px 22px rgba(255,255,255,0.22),
-    0 0 44px rgba(70,140,220,0.4),
-    0 0 90px rgba(70,140,220,0.15);
-}
-.planet-terre::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    radial-gradient(ellipse 26% 13% at 26% 38%, rgba(52,120,72,0.95) 0%, transparent 100%),
-    radial-gradient(ellipse 30% 16% at 60% 56%, rgba(64,132,84,0.9) 0%, transparent 100%),
-    radial-gradient(ellipse 14% 8% at 76% 26%, rgba(200,170,90,0.85) 0%, transparent 100%),
-    radial-gradient(ellipse 44% 10% at 30% 68%, rgba(240,248,255,0.28) 0%, transparent 100%),
-    radial-gradient(ellipse 50% 9% at 68% 20%, rgba(240,248,255,0.24) 0%, transparent 100%);
-  animation: surfaceSpin 60s linear infinite;
+/* Losange qui suit la fin de la barre de progression */
+.loading-fill::after {
+    content: "";
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    transform: translate(0, -50%) rotate(45deg);
 }
 
-/* ---- LUNE ---- */
-.planet-lune {
-  width: 74px; height: 74px;
-  background: radial-gradient(circle at 34% 30%, #efeee8 0%, #c2c1b8 40%, #78776f 72%, #26251f 100%);
-  box-shadow:
-    inset -12px -10px 26px rgba(0,0,0,0.85),
-    0 0 26px rgba(200,200,190,0.18);
-}
-.planet-lune::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    radial-gradient(circle 10px at 30% 58%, rgba(0,0,0,0.28) 0%, transparent 100%),
-    radial-gradient(circle 7px at 56% 28%, rgba(0,0,0,0.22) 0%, transparent 100%),
-    radial-gradient(circle 13px at 72% 64%, rgba(0,0,0,0.25) 0%, transparent 100%),
-    radial-gradient(circle 5px at 44% 44%, rgba(0,0,0,0.2) 0%, transparent 100%),
-    radial-gradient(circle 6px at 22% 30%, rgba(0,0,0,0.18) 0%, transparent 100%),
-    radial-gradient(circle 8px at 62% 78%, rgba(0,0,0,0.2) 0%, transparent 100%);
+.loading-status {
+    margin-top: 1.1rem;
+    font-size: 0.78rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
 }
 
-/* ---- MARS ---- */
-.planet-mars {
-  width: 92px; height: 92px;
-  background: radial-gradient(circle at 32% 28%, #f2a76d 0%, #c85f33 40%, #7c3016 72%, #2a0d06 100%);
-  box-shadow:
-    inset -14px -12px 30px rgba(0,0,0,0.85),
-    0 0 34px rgba(220,110,60,0.3);
-}
-.planet-mars::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    radial-gradient(ellipse 34% 10% at 52% 14%, rgba(255,250,240,0.75) 0%, transparent 100%),
-    radial-gradient(ellipse 38% 7% at 46% 46%, rgba(60,18,8,0.55) 0%, transparent 100%),
-    radial-gradient(circle 7px at 30% 62%, rgba(50,16,8,0.45) 0%, transparent 100%),
-    radial-gradient(circle 5px at 66% 36%, rgba(255,220,180,0.3) 0%, transparent 100%);
+/* ============================================================
+   Carte plein écran
+   ============================================================ */
+
+.app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* ---- IO ---- */
-.planet-io {
-  width: 64px; height: 64px;
-  background: radial-gradient(circle at 34% 30%, #ffe97a 0%, #edb83a 38%, #b96a1e 70%, #4a2508 100%);
-  box-shadow:
-    inset -12px -10px 24px rgba(0,0,0,0.85),
-    0 0 30px rgba(255,200,70,0.35);
-}
-.planet-io::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    radial-gradient(circle 5px at 38% 42%, rgba(120,30,0,0.7) 0%, transparent 100%),
-    radial-gradient(circle 7px at 62% 60%, rgba(120,30,0,0.6) 0%, transparent 100%),
-    radial-gradient(circle 4px at 28% 66%, rgba(60,20,0,0.5) 0%, transparent 100%),
-    radial-gradient(ellipse 30% 12% at 50% 20%, rgba(255,255,220,0.4) 0%, transparent 100%);
+.app.hidden {
+    display: none;
 }
 
-/* ---- JUPITER ---- */
-.planet-jupiter {
-  width: 150px; height: 150px;
-  background: radial-gradient(circle at 32% 28%, #f6e8cf 0%, #d8b78e 35%, #a07a4e 68%, #402d18 100%);
-  box-shadow:
-    inset -20px -18px 42px rgba(0,0,0,0.88),
-    0 0 48px rgba(220,180,130,0.22);
-}
-.planet-jupiter::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    repeating-linear-gradient(96deg,
-      rgba(150, 96, 54, 0.4) 0 10px,
-      rgba(238, 220, 190, 0.38) 10px 22px,
-      rgba(176, 118, 66, 0.34) 22px 30px,
-      rgba(242, 228, 200, 0.3) 30px 42px),
-    radial-gradient(ellipse 13% 8% at 62% 60%, rgba(196, 70, 40, 0.85) 0%, rgba(150,50,30,0.4) 60%, transparent 100%);
-  animation: surfaceSpin 90s linear infinite;
+/* Cadre aux proportions de l'image (1360x768) */
+.map-frame {
+    position: relative;
+    width: min(100vw, calc(100vh * (1360 / 768)));
+    height: min(100vh, calc(100vw * (768 / 1360)));
+    cursor: crosshair;
 }
 
-/* ---- EUROPA ---- */
-.planet-europa {
-  width: 84px; height: 84px;
-  background: radial-gradient(circle at 32% 28%, #f4f8fc 0%, #cfe2f2 38%, #8fb4d4 70%, #35536e 100%);
-  box-shadow:
-    inset -14px -12px 28px rgba(0,0,0,0.7),
-    0 0 36px rgba(150,200,255,0.4),
-    0 0 80px rgba(150,200,255,0.15);
-}
-.planet-europa::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    linear-gradient(115deg, transparent 44%, rgba(90,130,170,0.5) 46%, transparent 49%),
-    linear-gradient(160deg, transparent 30%, rgba(110,150,190,0.4) 33%, transparent 37%),
-    linear-gradient(75deg, transparent 62%, rgba(90,130,170,0.45) 65%, transparent 69%),
-    radial-gradient(ellipse 30% 16% at 50% 78%, rgba(70,110,150,0.35) 0%, transparent 100%);
+.map-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    filter: brightness(0.85) saturate(1.05);
 }
 
-/* ---- SATURNE ---- */
-.planet-saturne {
-  width: 92px; height: 92px;
-  background: radial-gradient(circle at 32% 28%, #f6ead0 0%, #dcc28e 40%, #a2854f 72%, #40311a 100%);
-  box-shadow:
-    inset -14px -12px 30px rgba(0,0,0,0.85),
-    0 0 34px rgba(220,190,130,0.25);
-}
-.planet-saturne::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background: repeating-linear-gradient(-5deg,
-    rgba(170,135,80,0.32) 0 7px,
-    rgba(240,225,190,0.3) 7px 15px);
-  animation: surfaceSpin 80s linear infinite;
-}
-.planet-saturne .rings {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 184px; height: 46px;
-  transform: translate(-50%,-50%) rotate(-20deg);
-  border-radius: 50%;
-  border: 7px solid rgba(222,198,150,0.55);
-  box-shadow:
-    0 0 10px rgba(222,198,150,0.3),
-    inset 0 0 8px rgba(255,240,210,0.4);
-  pointer-events: none;
+/* Vignette + fines lignes de scan */
+.map-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at center, transparent 55%, rgba(3, 5, 12, 0.5) 100%);
 }
 
-/* ---- NEPTUNE ---- */
-.planet-neptune {
-  width: 78px; height: 78px;
-  background: radial-gradient(circle at 32% 28%, #8fc0f2 0%, #3f74c2 38%, #1d3f86 70%, #081231 100%);
-  box-shadow:
-    inset -14px -12px 28px rgba(0,0,0,0.8),
-    0 0 38px rgba(70,130,220,0.45),
-    0 0 90px rgba(70,130,220,0.18);
-}
-.planet-neptune::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    radial-gradient(ellipse 16% 9% at 60% 58%, rgba(10,25,70,0.6) 0%, transparent 100%),
-    radial-gradient(ellipse 40% 8% at 34% 30%, rgba(255,255,255,0.22) 0%, transparent 100%),
-    radial-gradient(ellipse 30% 6% at 66% 74%, rgba(255,255,255,0.15) 0%, transparent 100%);
-  animation: surfaceSpin 55s linear infinite;
+/* ============================================================
+   Marqueurs : losanges fine-ligne
+   ============================================================ */
+
+.markers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
 }
 
-/* ---- RIVAGE BRISÉ ---- */
-.planet-rivage {
-  width: 88px; height: 88px;
-  background: radial-gradient(circle at 34% 30%, #d9b9e8 0%, #a47ec0 35%, #5c3a78 68%, #1d0f2e 100%);
-  box-shadow:
-    inset -14px -12px 30px rgba(0,0,0,0.85),
-    0 0 38px rgba(170,110,220,0.4),
-    0 0 90px rgba(170,110,220,0.18);
-}
-.planet-rivage::after {
-  content: ""; position: absolute; inset: 0; border-radius: 50%;
-  background:
-    linear-gradient(128deg, transparent 42%, rgba(10,4,16,0.85) 46%, rgba(10,4,16,0.7) 50%, transparent 54%),
-    radial-gradient(circle 6px at 30% 40%, rgba(245,217,10,0.5) 0%, transparent 100%),
-    radial-gradient(circle 4px at 68% 62%, rgba(245,217,10,0.4) 0%, transparent 100%),
-    radial-gradient(circle 5px at 56% 26%, rgba(255,255,255,0.3) 0%, transparent 100%);
+.marker {
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    border: 1px solid var(--accent);
+    background: rgba(255, 224, 102, 0.12);
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 0 8px rgba(255, 224, 102, 0.5);
+    transition: background 0.2s;
 }
 
-/* ============ HUD ============ */
-.clan-hud {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 22px clamp(20px, 4vw, 48px);
-  z-index: 20;
-  background: linear-gradient(to bottom, rgba(4,5,10,0.8), transparent);
-}
-.hud-logo { display: flex; align-items: center; gap: 14px; }
-.hud-mark {
-  color: var(--accent);
-  font-size: 22px;
-  animation: markPulse 3s ease-in-out infinite;
-}
-@keyframes markPulse {
-  0%,100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(0.8); }
-}
-.hud-texts { display: flex; flex-direction: column; gap: 3px; }
-.hud-title { font-size: 16px; font-weight: 700; letter-spacing: 0.4em; }
-.hud-motto {
-  font-size: 10px; font-weight: 300;
-  letter-spacing: 0.3em; color: var(--text-dim);
-  text-transform: uppercase;
-}
-.hud-links { display: flex; gap: clamp(14px, 3vw, 30px); }
-.hud-links a {
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 12px; font-weight: 600;
-  letter-spacing: 0.3em; text-transform: uppercase;
-  transition: color 0.25s;
-}
-.hud-links a:hover { color: var(--accent); }
-
-/* ============ HINT ============ */
-.map-hint {
-  position: absolute;
-  bottom: 56px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  z-index: 15;
-  opacity: 0;
-  animation: fadeUp 1s 3.6s ease forwards;
-  transition: opacity 0.5s;
-  pointer-events: none;
-}
-.map-hint.dim { opacity: 0 !important; }
-.hint-line {
-  width: 1px; height: 42px;
-  background: linear-gradient(var(--accent), transparent);
-  animation: hintPulse 2s ease-in-out infinite;
-}
-@keyframes hintPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
-.map-hint p {
-  font-size: 10px; font-weight: 400;
-  letter-spacing: 0.45em; color: var(--text-dim);
+/* Halo : losange qui s'étire */
+.marker::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border: 1px solid var(--accent-soft);
+    animation: pulse 2.4s ease-out infinite;
 }
 
-/* ============ FOOTER ============ */
-.map-footer {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  text-align: center;
-  padding: 14px 20px;
-  z-index: 10;
-  background: linear-gradient(to top, rgba(4,5,10,0.7), transparent);
-}
-.map-footer p {
-  font-size: 10px; font-weight: 300;
-  letter-spacing: 0.12em; color: rgba(150,160,173,0.6);
+.marker.active {
+    background: var(--accent);
 }
 
-/* ============ RESPONSIVE ============ */
-@media (max-width: 1100px) {
-  .planet-jupiter { width: 120px; height: 120px; }
-  .planet-terre { width: 96px; height: 96px; }
-  .planet-mars { width: 74px; height: 74px; }
-  .planet-rivage, .planet-europa { width: 66px; height: 66px; }
-  .planet-saturne { width: 74px; height: 74px; }
-  .planet-saturne .rings { width: 148px; height: 38px; }
-  .dest-card { min-width: 170px; }
-  .d-terre   { --dx: 16%; --dy: 20%; }
-  .d-mars    { --dx: 16%; --dy: 52%; }
-  .d-lune    { --dx: 16%; --dy: 84%; }
-  .d-europa  { --dx: 50%; --dy: 14%; }
-  .d-io      { --dx: 50%; --dy: 48%; }
-  .d-jupiter { --dx: 50%; --dy: 82%; }
-  .d-neptune { --dx: 84%; --dy: 20%; }
-  .d-saturne { --dx: 84%; --dy: 54%; }
-  .d-rivage  { --dx: 84%; --dy: 86%; }
-}
-@media (max-width: 760px) {
-  .planet-jupiter { width: 88px; height: 88px; }
-  .planet-terre { width: 72px; height: 72px; }
-  .planet-mars, .planet-rivage { width: 56px; height: 56px; }
-  .planet-europa, .planet-neptune { width: 52px; height: 52px; }
-  .planet-lune, .planet-io { width: 46px; height: 46px; }
-  .planet-saturne { width: 56px; height: 56px; }
-  .planet-saturne .rings { width: 108px; height: 28px; border-width: 5px; }
-  .connector { width: 18px; }
-  .dest-card { min-width: 148px; padding: 8px 12px 7px; }
-  .dest-name { font-size: 11px; letter-spacing: 0.28em; }
-  .dest-sub { font-size: 7.5px; letter-spacing: 0.18em; }
-  .detail-row { font-size: 9px; }
-  .detail-label { font-size: 7px; }
-  /* Mobile : scroll devient nécessaire, disposition verticale sur hauteur étendue */
-  .space-map { position: absolute; min-height: 178vh; }
-  body { overflow-y: auto; }
-  .d-terre   { --dx: 22%; --dy: 6%; }
-  .d-mars    { --dx: 22%; --dy: 19%; }
-  .d-lune    { --dx: 22%; --dy: 32%; }
-  .d-europa  { --dx: 22%; --dy: 45%; }
-  .d-io      { --dx: 22%; --dy: 58%; }
-  .d-jupiter { --dx: 22%; --dy: 71%; }
-  .d-neptune { --dx: 22%; --dy: 84%; }
-  .d-saturne { --dx: 22%; --dy: 97%; }
-  .d-rivage  { --dx: 22%; --dy: 110%; }
-  .map-footer { position: absolute; }
-  .map-hint { display: none; }
+@keyframes pulse {
+    0%   { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.4); opacity: 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001s !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001s !important;
-  }
-  #intro { display: none; }
-  .space-map { opacity: 1; animation: none; }
-  .dest { opacity: 1; animation: none; }
-  .map-hint { opacity: 1; animation: none; }
+/* ============================================================
+   Réticule (reticle.png — design line-art fourni par le clan)
+   ============================================================ */
+
+.reticle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+    transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.25s;
+    pointer-events: none;
+    z-index: 5;
 }
+
+.reticle.on {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+.ret-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: retSpin 12s linear infinite;
+    filter: drop-shadow(0 0 3px rgba(200, 240, 255, 0.35));
+    user-select: none;
+}
+
+@keyframes retSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   Panneau de survol (thin-line)
+   ============================================================ */
+
+.planet-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 290px;
+    padding: 1.2rem 1.3rem;
+    background: var(--panel-bg);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Filet doré sur le bord haut */
+.planet-panel::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 46%;
+    height: 1px;
+    background: var(--accent);
+}
+
+.planet-panel.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--line-faint);
+}
+
+/* Emblème : losange line-art */
+.emblem {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--accent);
+    background: rgba(255, 224, 102, 0.06);
+    transform: rotate(45deg);
+    position: relative;
+}
+
+.emblem::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--accent-soft);
+}
+
+.emblem::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 3px;
+    background: var(--accent);
+    transform: translate(-50%, -50%);
+}
+
+.panel-header h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1.2;
+}
+
+.tag {
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.panel-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 0.8rem;
+}
+
+.panel-stats {
+    list-style: none;
+}
+
+.panel-stats li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    padding: 0.32rem 0;
+    border-bottom: 1px solid var(--line-faint);
+}
+
+.panel-stats li:last-child { border-bottom: none; }
+
+.panel-stats li span:first-child {
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.72rem;
+}
+
+.panel-stats li span:last-child {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* ============================================================
+   Panneau latéral droit (clic sur une planète)
+   ============================================================ */
+
+.side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(380px, 100vw);
+    background: var(--panel-bg);
+    border-left: 1px solid var(--accent);
+    backdrop-filter: blur(12px);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.55);
+    padding: 2.4rem 1.8rem;
+    overflow-y: auto;
+    transform: translateX(105%);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 500;
+}
+
+.side-panel.open {
+    transform: translateX(0);
+}
+
+/* Barre fine décorative verticale côté intérieur */
+.side-panel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 6px;
+    width: 1px;
+    height: 100%;
+    background: var(--line-faint);
+    pointer-events: none;
+}
+
+.side-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.side-close:hover { border-color: var(--accent); }
+
+/* Croix fine dessinée en CSS */
+.side-close::before,
+.side-close::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 1px;
+    background: var(--text);
+}
+
+.side-close::before { transform: translate(-50%, -50%) rotate(45deg); }
+.side-close::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+
+.side-lore {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin: 1.1rem 0 1.6rem;
+    border-left: 1px solid var(--line);
+    padding-left: 0.9rem;
+}
+
+.side-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+/* Losange devant le sous-titre */
+.side-subtitle::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border: 1px solid var(--accent);
+    transform: rotate(45deg);
+    flex: none;
+}
+
+.side-details {
+    list-style: none;
+    border-top: 1px solid var(--line-faint);
+}
+
+.side-details li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--line-faint);
+}
+
+.side-details li span:first-child {
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.75rem;
+}
+
+.side-details li span:last-child {
+    color: var(--accent);
+    font-weight: 600;
+    text-align: right;
+}
+
+.side-hint {
+    margin-top: 2rem;
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: 0.6;
+}
+
+/* Barre de défilement fine assortie */
+.side-panel::-webkit-scrollbar { width: 4px; }
+.side-panel::-webkit-scrollbar-track { background: transparent; }
+.side-panel::-webkit-scrollbar-thumb { background: var(--line); }
+
+/* ============================================================
+   Étiquette HUD (coin bas droit)
+   ============================================================ */
+
+.hud-label {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.68rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    z-index: 50;
+    pointer-events: none;
+}
+
+.hud-label::after {
+    content: "";
+    width: 46px;
+    height: 1px;
+    background: var(--line);
+}
+
+.hud-diamond {
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--accent);
+    transform: rotate(45deg);
+    flex: none;
+}
+
+/* ============================================================
+   Mode calibrage (?debug)
+   ============================================================ */
+
+.debug-info {
+    position: fixed;
+    bottom: 12px;
+    left: 12px;
+    padding: 0.4rem 0.8rem;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid var(--accent);
+    font-family: "Rajdhani", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    color: var(--accent);
+    z-index: 2000;
+    pointer-events: none;
+}
+
+.debug-info.hidden { display: none; }

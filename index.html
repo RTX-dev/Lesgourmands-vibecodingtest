@@ -1,160 +1,80 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Les Gourmands — Clan Destiny 2. Carte céleste interactive : survolez les mondes pour découvrir le clan." />
-<title>Les Gourmands — Carte Céleste</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Gourmand — Destiny 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<canvas id="starfield" aria-hidden="true"></canvas>
-<div class="nebula nebula-1" aria-hidden="true"></div>
-<div class="nebula nebula-2" aria-hidden="true"></div>
-
-<!-- Intro d'apparition -->
-<div id="intro" aria-hidden="true">
-  <div class="intro-inner">
-    <p class="intro-eyebrow">CLAN DESTINY 2</p>
-    <h1 class="intro-title">LES GOURMANDS</h1>
-    <p class="intro-sub">Localisation des mondes…</p>
-  </div>
-</div>
-
-<!-- Carte céleste = site -->
-<div class="space-map" id="spaceMap">
-  <div class="map-vignette" aria-hidden="true"></div>
-  <div class="orbit-ring orbit-1" aria-hidden="true"></div>
-  <div class="orbit-ring orbit-2" aria-hidden="true"></div>
-
-  <!-- TERRE -->
-  <div class="dest d-terre" style="--delay:.15s;">
-    <div class="planet planet-terre" data-planet="terre" tabindex="0" role="button" aria-label="Terre — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Terre</p>
-      <p class="dest-sub">La Tour — QG du clan</p>
-      <div class="dest-details" data-details="terre"></div>
+    <!-- Écran de chargement -->
+    <div id="loading" class="loading">
+        <div class="loading-inner">
+            <h1 class="loading-title">Les <span class="accent">Gourmand</span></h1>
+            <p class="loading-sub">Destiny 2 · Carte céleste du clan</p>
+            <div class="loading-bar"><div class="loading-fill" id="loadFill"></div></div>
+            <p class="loading-status" id="loadStatus">Connexion au Voyageur...</p>
+        </div>
     </div>
-  </div>
 
-  <!-- LUNE -->
-  <div class="dest d-lune" style="--delay:.30s;">
-    <div class="planet planet-lune" data-planet="lune" tabindex="0" role="button" aria-label="Lune — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Lune</p>
-      <p class="dest-sub">Donjons & Cauchemars</p>
-      <div class="dest-details" data-details="lune"></div>
+    <!-- Carte céleste plein écran -->
+    <main id="app" class="app hidden" aria-hidden="true">
+        <div class="map-frame" id="mapFrame">
+            <img src="image.jpg" alt="Carte céleste" id="mapImg">
+            <div class="map-overlay"></div>
+
+            <!-- Marqueurs de planètes (générés par script.js) -->
+            <div id="markers" class="markers"></div>
+
+            <!-- Réticule (image reticle.png fournie par le clan) -->
+            <div class="reticle" id="reticle" aria-hidden="true">
+                <img src="reticle.png" alt="" class="ret-img" draggable="false">
+            </div>
+
+            <!-- Panneau d'info (contenu mis à jour selon la planète survolée) -->
+            <aside class="planet-panel" id="panel" aria-hidden="true">
+                <div class="panel-header">
+                    <div class="emblem" id="panelEmblem"></div>
+                    <div>
+                        <h2 id="panelName">—</h2>
+                        <span class="tag" id="panelCat">—</span>
+                    </div>
+                </div>
+                <p class="panel-desc" id="panelDesc">—</p>
+                <ul class="panel-stats" id="panelStats"></ul>
+            </aside>
+        </div>
+
+        <!-- Panneau latéral : complément d'info au clic sur une planète -->
+        <aside class="side-panel" id="sidePanel" aria-hidden="true">
+            <button class="side-close" id="sideClose" aria-label="Fermer le panneau"></button>
+            <div class="panel-header">
+                <div class="emblem" id="sideEmblem"></div>
+                <div>
+                    <h2 id="sideName">—</h2>
+                    <span class="tag" id="sideCat">—</span>
+                </div>
+            </div>
+            <p class="side-lore" id="sideLore">—</p>
+            <h3 class="side-subtitle">En détail</h3>
+            <ul class="side-details" id="sideDetails"></ul>
+            <p class="side-hint">Clique ailleurs sur la carte pour fermer</p>
+        </aside>
+    </main>
+
+    <!-- Étiquette HUD façon Bungie -->
+    <div class="hud-label">
+        <span class="hud-diamond"></span>
+        <span>Les Gourmand · Carte céleste</span>
     </div>
-  </div>
 
-  <!-- MARS -->
-  <div class="dest d-mars" style="--delay:.45s;">
-    <div class="planet planet-mars" data-planet="mars" tabindex="0" role="button" aria-label="Mars — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Mars</p>
-      <p class="dest-sub">Escalier & Farm</p>
-      <div class="dest-details" data-details="mars"></div>
-    </div>
-  </div>
+    <!-- Affichage coordonnées en mode calibrage (?debug) -->
+    <div id="debugInfo" class="debug-info hidden"></div>
 
-  <!-- IO -->
-  <div class="dest d-io" style="--delay:.60s;">
-    <div class="planet planet-io" data-planet="io" tabindex="0" role="button" aria-label="Io — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Io</p>
-      <p class="dest-sub">Représailles & Stratégie</p>
-      <div class="dest-details" data-details="io"></div>
-    </div>
-  </div>
-
-  <!-- JUPITER -->
-  <div class="dest d-jupiter" style="--delay:.75s;">
-    <div class="planet planet-jupiter" data-planet="jupiter" tabindex="0" role="button" aria-label="Jupiter — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Jupiter</p>
-      <p class="dest-sub">Raids</p>
-      <div class="dest-details" data-details="jupiter"></div>
-    </div>
-  </div>
-
-  <!-- EUROPA -->
-  <div class="dest flip d-europa" style="--delay:.90s;">
-    <div class="planet planet-europa" data-planet="europa" tabindex="0" role="button" aria-label="Europa — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Europa</p>
-      <p class="dest-sub">Jugement de Vex</p>
-      <div class="dest-details" data-details="europa"></div>
-    </div>
-  </div>
-
-  <!-- SATURNE -->
-  <div class="dest flip d-saturne" style="--delay:1.05s;">
-    <div class="planet planet-saturne" data-planet="saturne" tabindex="0" role="button" aria-label="Saturne — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Saturne</p>
-      <p class="dest-sub">Grands Prix & PvP</p>
-      <div class="dest-details" data-details="saturne"></div>
-    </div>
-  </div>
-
-  <!-- NEPTUNE -->
-  <div class="dest flip d-neptune" style="--delay:1.20s;">
-    <div class="planet planet-neptune" data-planet="neptune" tabindex="0" role="button" aria-label="Neptune — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Neptune</p>
-      <p class="dest-sub">Neomuna — Stratégie</p>
-      <div class="dest-details" data-details="neptune"></div>
-    </div>
-  </div>
-
-  <!-- RIVAGE BRISÉ -->
-  <div class="dest flip d-rivage" style="--delay:1.35s;">
-    <div class="planet planet-rivage" data-planet="rivage" tabindex="0" role="button" aria-label="Rivage brisé — informations du clan"></div>
-    <span class="connector" aria-hidden="true"></span>
-    <div class="dest-card">
-      <p class="dest-name">Rivage brisé</p>
-      <p class="dest-sub">Éclats & Lore</p>
-      <div class="dest-details" data-details="rivage"></div>
-    </div>
-  </div>
-
-  <!-- HUD -->
-  <header class="clan-hud">
-    <div class="hud-logo">
-      <span class="hud-mark">◆</span>
-      <div class="hud-texts">
-        <span class="hud-title">LES GOURMANDS</span>
-        <span class="hud-motto">Clan Destiny 2 · EU · FR</span>
-      </div>
-    </div>
-    <nav class="hud-links">
-      <a href="https://www.bungie.net/" target="_blank" rel="noopener">Bungie</a>
-      <a href="https://discord.com/" target="_blank" rel="noopener">Discord</a>
-    </nav>
-  </header>
-
-  <div class="map-hint" id="mapHint">
-    <span class="hint-line"></span>
-    <p>SURVOLEZ UN MONDE POUR DÉCOUVRIR LE CLAN</p>
-  </div>
-
-  <footer class="map-footer">
-    <p>Destiny 2 est une marque de Bungie, Inc. Site communautaire du clan — aucune affiliation.</p>
-  </footer>
-</div>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
