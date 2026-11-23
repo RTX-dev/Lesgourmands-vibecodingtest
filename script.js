@@ -12,12 +12,12 @@
 
 const PLANETES = [
     {
-        nom: "Le Tour",
+        nom: "La Tour",
         cat: "QG du clan",
         desc: "Point de ralliement des Gourmand. Échanges de loot, quêtes hebdo et pose screenshot devant le Corbeau.",
         x: 47.9, y: 47.8, rayon: 9,
         infos: [["Chef de clan", "Ace"], ["Membres", "24"], ["Discord", "discord.gg/eNGnzNx5gt"]],
-        lore: "Le Tour, c'est la maison. Entre deux quêtes hebdo, on y échange du loot, on y fête les god rolls et on y fait les présentations des nouveaux. Toute l'aventure des Gourmand commence ici.",
+        lore: "La Tour, c'est la maison. Entre deux quêtes hebdo, on y échange du loot, on y fête les god rolls et on y fait les présentations des nouveaux. Toute l'aventure des Gourmand commence ici.",
         details: [["Membres", "24"], ["Plateformes", "PS5 / PC / Xbox"], ["Discord", "discord.gg/eNGnzNx5gt"], ["Horaires", "18h - 23h"]]
     },
     {
